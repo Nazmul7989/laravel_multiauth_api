@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
-            <a class="navbar-brand" href="#">Navbar Logo</a>
+            <router-link :to="{name: 'home'}" class="navbar-brand" href="#">Navbar Logo</router-link>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -11,7 +11,7 @@
                         <router-link :to="{name: 'home'}" active-class="active" exact class="nav-link" >Home</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link to="{name: 'login'}" active-class="active" exact class="nav-link" >Login</router-link>
+                        <router-link :to="{name: 'login'}" active-class="active" exact class="nav-link" >Login</router-link>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

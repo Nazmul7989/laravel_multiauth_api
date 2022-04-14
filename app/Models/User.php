@@ -23,6 +23,12 @@ class User extends Authenticatable
         'password',
     ];
 
+    protected $table        = 'users';
+    protected $primaryKey   = 'id';
+    protected $keyType      = 'int';
+    public $incrementing    = true;
+    public $timestamps      = true;
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -41,4 +47,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+
 }

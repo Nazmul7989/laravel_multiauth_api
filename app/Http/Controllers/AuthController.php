@@ -43,7 +43,7 @@ class AuthController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status' => false,
-                'error' => $validator->errors()->all()
+                'error' => $validator->errors()
             ]);
         }
 
@@ -73,6 +73,7 @@ class AuthController extends Controller
     //admin login
     public function adminLogin(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
@@ -81,7 +82,7 @@ class AuthController extends Controller
         if($validator->fails()){
             return response()->json([
                 'status' => false,
-                'error' => $validator->errors()->all()
+                'error' => $validator->errors()
             ]);
         }
 
