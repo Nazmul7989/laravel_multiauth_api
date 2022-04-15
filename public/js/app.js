@@ -8124,9 +8124,9 @@ __webpack_require__.r(__webpack_exports__);
       $('.modal').modal('show'); //show post in modal
 
       this.form.id = bill.id;
-      this.form.name = bill.name;
-      this.form.email = bill.email;
-      this.form.password = bill.password;
+      this.form.user_id = bill.user_id;
+      this.form.date = bill.date;
+      this.form.amount = bill.amount;
     },
     updateBill: function updateBill() {
       var _this2 = this;
@@ -8156,8 +8156,30 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    deleteBill: function deleteBill(id) {
+    updateBillStatus: function updateBillStatus(id) {
       var _this3 = this;
+
+      var token = localStorage.getItem('admin_access_token');
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer ".concat(token)
+        }
+      };
+      this.form.get('/api/admin/bill//update/status/' + id, config).then(function (response) {
+        //Load post again after creating new post
+        _this3.$store.dispatch('loadBills');
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Bill Status Updated successfully'
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    deleteBill: function deleteBill(id) {
+      var _this4 = this;
 
       sweetalert2__WEBPACK_IMPORTED_MODULE_1___default().fire({
         title: 'Are you sure?',
@@ -8179,7 +8201,7 @@ __webpack_require__.r(__webpack_exports__);
           };
           axios["delete"]('/api/admin/bill/delete/' + id, config).then(function (response) {
             //Reloading the posts after deleting the post
-            _this3.$store.dispatch('loadBills');
+            _this4.$store.dispatch('loadBills');
           })["catch"](function (error) {
             console.log(error);
           });

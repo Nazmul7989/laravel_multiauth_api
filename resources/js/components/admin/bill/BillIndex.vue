@@ -151,9 +151,9 @@ export default {
             $('.modal').modal('show');
             //show post in modal
             this.form.id = bill.id
-            this.form.name = bill.name
-            this.form.email = bill.email
-            this.form.password = bill.password
+            this.form.user_id = bill.user_id
+            this.form.date = bill.date
+            this.form.amount = bill.amount
 
         },
         updateBill(){
@@ -181,6 +181,29 @@ export default {
                 console.log(error)
             })
         },
+
+        updateBillStatus(id){
+            let token = localStorage.getItem('admin_access_token');
+            let config = {
+                headers: {
+                    'Accept' : 'application/json',
+                    "Authorization" : `Bearer ${token}`,
+                }
+            }
+            this.form.get('/api/admin/bill//update/status/' + id,config ).then((response)=>{
+                //Load post again after creating new post
+                this.$store.dispatch('loadBills')
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Bill Status Updated successfully'
+                })
+
+            }).catch((error)=>{
+                console.log(error)
+            })
+        },
+
         deleteBill(id){
 
             Swal.fire({

@@ -25,6 +25,7 @@ Route::group( ['prefix' => 'admin','middleware' => ['auth:admin-api'] ],function
     Route::post('/bill/store',[BillController::class,'store'])->name('bill.store');
     Route::post('/bill/update/{id}',[BillController::class,'update'])->name('bill.update');
     Route::delete('/bill/delete/{id}',[BillController::class,'destroy'])->name('bill.delete');
+    Route::get('/bill//update/status/{id}',[BillController::class,'updateStatus'])->name('bill.updateStatus');
 
 
 

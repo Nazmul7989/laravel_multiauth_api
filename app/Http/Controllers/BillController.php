@@ -79,5 +79,24 @@ class BillController extends Controller
 
     }
 
+    public function updateStatus($id)
+    {
+        $bill = Bill::findOrFail($id);
+
+        if ($bill->status == 1) {
+            $bill->status = 0;
+            $bill->save();
+        }else{
+            $bill->status = 1;
+            $bill->save();
+        }
+
+        return response()->json([
+            'status' => true,
+            'message'  => 'Bill Status Changed successfully.',
+        ],200);
+
+    }
+
 
 }
