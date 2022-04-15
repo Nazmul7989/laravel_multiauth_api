@@ -13,6 +13,12 @@
                     <li class="nav-item">
                         <router-link :to="{name: 'login'}" active-class="active" exact class="nav-link" >Login</router-link>
                     </li>
+                    <li class="nav-item">
+                        <router-link :to="{name: 'customer'}" active-class="active" exact class="nav-link" >Customers</router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link :to="{name: 'bill'}" active-class="active" exact class="nav-link" >Bill</router-link>
+                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Account

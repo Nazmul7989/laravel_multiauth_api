@@ -1,18 +1,10 @@
 <template>
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h3>Welcome to Dashboard</h3>
-            </div>
-        </div>
-
-    </div>
-
+    <div></div>
 </template>
 
 <script>
 export default {
-    name: "Dashboard",
+    name: "BillIndex",
     data() {
         return {
             name: ''
@@ -25,7 +17,7 @@ export default {
     },
     components: {},
     watch: {
-        $route(to, from) {
+        route(to, from) {
             //add $ sign before route
         }
     },

@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    //user dashboard
+    //customer dashboard
     public function userDashboard()
     {
-        $user = User::select('users.*')->find(auth()->guard('user')->user()->id);
+        $user = User::select('users.*')->find(auth()->guard('customer')->user()->id);
 
         return response()->json([
             'status' => true,
-            'user'  => $user,
+            'customer'  => $user,
         ],200);
     }
 
@@ -28,11 +28,11 @@ class AuthController extends Controller
 
         return response()->json([
             'status' => true,
-            'user'  => $admin,
+            'admin'  => $admin,
         ],200);
     }
 
-    //user login
+    //customer login
     public function userLogin(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -47,11 +47,11 @@ class AuthController extends Controller
             ]);
         }
 
-        if(auth()->guard('user')->attempt(['email' => request('email'), 'password' => request('password')])){
+        if(auth()->guard('customer')->attempt(['email' => request('email'), 'password' => request('password')])){
 
-            config(['auth.guards.api.provider' => 'user']);
+            config(['auth.guards.api.provider' => 'customer']);
 
-            $user = User::select('users.*')->find(auth()->guard('user')->user()->id);
+            $user = User::select('users.*')->find(auth()->guard('customer')->user()->id);
 
             $token = $user->createToken('Personal Access Token')->accessToken;
             $token_expires = Carbon::now()->addWeek(1);
@@ -59,7 +59,7 @@ class AuthController extends Controller
 
             return response()->json([
 
-                'user' => $user,
+                'customer' => $user,
                 'access_token' => $token,
                 'token_type' => "Bearer",
                 'token_expires' => Carbon::parse($token_expires)->toDateString()
@@ -98,7 +98,7 @@ class AuthController extends Controller
 
             return response()->json([
 
-                'user' => $admin,
+                'admin' => $admin,
                 'access_token' => $token,
                 'token_type' => "Bearer",
                 'token_expires' => Carbon::parse($token_expires)->toDateString()

@@ -5,27 +5,36 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
     state: {
-        posts: {},
+        customers: {},
     },
     getters: {
 
-        getPosts(state) {
-            return state.posts;
+        getCustomers(state) {
+            return state.customers;
         },
 
     },
     mutations: {
 
-        SET_POSTS(state, data) {
-            state.posts = data;
+        SET_CUSTOMERS(state, data) {
+            state.customers = data;
         },
 
     },
     actions: {
+        loadCustomers  (context) {
 
-        loadPosts(context) {
-            axios.get('/post').then((response) => {
-                context.commit('SET_POSTS', response.data)
+            let token = localStorage.getItem('admin_access_token');
+
+            let config = {
+                headers: {
+                    'Accept' : 'application/json',
+                    "Authorization" : `Bearer ${token}`,
+                }
+            }
+
+             axios.get('/api/admin/customer',config).then((response) => {
+                context.commit('SET_CUSTOMERS', response.data.customers)
             }).catch((error) => {
                 console.log(error)
             })

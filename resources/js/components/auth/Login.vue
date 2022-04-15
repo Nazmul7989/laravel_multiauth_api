@@ -62,7 +62,7 @@ export default {
     }),
     methods: {
         async login() {
-            await this.form.post('/api/user/login').then((response)=>{
+            await this.form.post('/api/customer/login').then((response)=>{
                 console.log(response.data)
             }).catch((error)=>{
                 console.log(error)

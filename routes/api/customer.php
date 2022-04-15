@@ -5,9 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 
-Route::post('/user/login',[AuthController::class, 'userLogin'])->name('userLogin');
+Route::post('/customer/login',[AuthController::class, 'userLogin'])->name('userLogin');
 
-Route::group( ['prefix' => 'user','middleware' => ['auth:user-api','scopes:user'] ],function(){
+Route::group( ['prefix' => 'customer','middleware' => ['auth:customer-api'] ],function(){
     // authenticated staff routes here
     Route::get('/dashboard',[AuthController::class, 'userDashboard']);
 });

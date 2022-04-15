@@ -29,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes();
 
         Passport::tokensCan([
-            'user' => 'User Type',
+            'customer' => 'User Type',
             'admin' => 'Admin User Type',
         ]);
     }
