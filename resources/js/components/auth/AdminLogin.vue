@@ -64,6 +64,7 @@ export default {
             await this.form.post('/api/admin/login').then((response)=>{
 
                 localStorage.setItem('admin_access_token',response.data.access_token);
+                localStorage.setItem('admin',JSON.stringify(response.data.admin));
                 this.$router.push({name:'adminDashboard'})
 
 

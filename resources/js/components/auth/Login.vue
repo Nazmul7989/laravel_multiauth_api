@@ -63,7 +63,9 @@ export default {
     methods: {
         async login() {
             await this.form.post('/api/customer/login').then((response)=>{
-                console.log(response.data)
+                localStorage.setItem('customer_access_token',response.data.access_token);
+                localStorage.setItem('customer',JSON.stringify(response.data.customer));
+                this.$router.push({name:'customerDashboard'})
             }).catch((error)=>{
                 console.log(error)
             })

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bill;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BillController extends Controller
 {
@@ -33,6 +34,7 @@ class BillController extends Controller
         $bill->date      = $request->date;
         $bill->amount    = $request->amount;
         $bill->save();
+
 
         return response()->json([
             'status' => true,

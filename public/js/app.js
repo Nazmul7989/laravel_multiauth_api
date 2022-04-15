@@ -8596,6 +8596,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.next = 2;
                 return _this.form.post('/api/admin/login').then(function (response) {
                   localStorage.setItem('admin_access_token', response.data.access_token);
+                  localStorage.setItem('admin', JSON.stringify(response.data.admin));
 
                   _this.$router.push({
                     name: 'adminDashboard'
@@ -8708,7 +8709,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 _context.next = 2;
                 return _this.form.post('/api/customer/login').then(function (response) {
-                  console.log(response.data);
+                  localStorage.setItem('customer_access_token', response.data.access_token);
+                  localStorage.setItem('customer', JSON.stringify(response.data.customer));
+
+                  _this.$router.push({
+                    name: 'customerDashboard'
+                  });
                 })["catch"](function (error) {
                   console.log(error);
                 });
@@ -8721,6 +8727,84 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  name: "CustomerDashboard",
+  data: function data() {
+    return {
+      name: ''
+    };
+  },
+  methods: {
+    test: function test() {}
+  },
+  computed: {
+    bills: function bills() {
+      return this.$store.getters.getMyBills;
+    }
+  },
+  mounted: function mounted() {
+    this.$store.dispatch('loadMyBills');
   }
 });
 
@@ -8901,6 +8985,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/admin/AdminDashboard */ "./resources/js/components/admin/AdminDashboard.vue");
 /* harmony import */ var _components_admin_customer_CustomerIndex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/admin/customer/CustomerIndex */ "./resources/js/components/admin/customer/CustomerIndex.vue");
 /* harmony import */ var _components_admin_bill_BillIndex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/admin/bill/BillIndex */ "./resources/js/components/admin/bill/BillIndex.vue");
+/* harmony import */ var _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/customer/dashboard/CustomerDashboard */ "./resources/js/components/customer/dashboard/CustomerDashboard.vue");
+
 
 
 
@@ -8923,6 +9009,10 @@ var routes = [{
   path: '/admin/dashboard',
   component: _components_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_3__["default"],
   name: 'adminDashboard'
+}, {
+  path: '/customer/dashboard',
+  component: _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__["default"],
+  name: 'customerDashboard'
 }, {
   path: '/customer/index',
   component: _components_admin_customer_CustomerIndex__WEBPACK_IMPORTED_MODULE_4__["default"],
@@ -8954,7 +9044,8 @@ vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1_
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     customers: {},
-    bills: {}
+    bills: {},
+    myBills: {}
   },
   getters: {
     getCustomers: function getCustomers(state) {
@@ -8962,6 +9053,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     getBills: function getBills(state) {
       return state.bills;
+    },
+    getMyBills: function getMyBills(state) {
+      return state.myBills;
     }
   },
   mutations: {
@@ -8970,6 +9064,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     SET_BILLS: function SET_BILLS(state, data) {
       state.bills = data;
+    },
+    SET_MY_BILLS: function SET_MY_BILLS(state, data) {
+      state.myBills = data;
     }
   },
   actions: {
@@ -8988,7 +9085,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         console.log(error);
       });
     },
-    //get billing data
+    //get all customer billing data
     loadBills: function loadBills(context) {
       var token = localStorage.getItem('admin_access_token');
       var config = {
@@ -8999,6 +9096,29 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       };
       axios.get('/api/admin/bill', config).then(function (response) {
         context.commit('SET_BILLS', response.data.bills);
+        setTimeout(function () {
+          $("#myTable").DataTable({
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+            pageLength: 5
+          });
+        });
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    //get specific customer billing data
+    loadMyBills: function loadMyBills(context) {
+      var token = localStorage.getItem('customer_access_token');
+      var user = localStorage.getItem('customer');
+      var userData = JSON.parse(user);
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer ".concat(token)
+        }
+      };
+      axios.get('/api/customer/my-bill/' + userData.id, config).then(function (response) {
+        context.commit('SET_MY_BILLS', response.data.bills);
         setTimeout(function () {
           $("#myTable").DataTable({
             lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
@@ -65445,6 +65565,45 @@ component.options.__file = "resources/js/components/auth/Login.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/customer/dashboard/CustomerDashboard.vue":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/customer/dashboard/CustomerDashboard.vue ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _CustomerDashboard_vue_vue_type_template_id_f4c66ed6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true& */ "./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true&");
+/* harmony import */ var _CustomerDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CustomerDashboard.vue?vue&type=script&lang=js& */ "./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _CustomerDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CustomerDashboard_vue_vue_type_template_id_f4c66ed6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _CustomerDashboard_vue_vue_type_template_id_f4c66ed6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "f4c66ed6",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/customer/dashboard/CustomerDashboard.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/partials/Header.vue":
 /*!*****************************************************!*\
   !*** ./resources/js/components/partials/Header.vue ***!
@@ -65580,6 +65739,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************!*\
+  !*** ./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CustomerDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CustomerDashboard.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CustomerDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/partials/Header.vue?vue&type=script&lang=js&":
 /*!******************************************************************************!*\
   !*** ./resources/js/components/partials/Header.vue?vue&type=script&lang=js& ***!
@@ -65694,6 +65869,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_4221c3ad_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Login_vue_vue_type_template_id_4221c3ad_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Login.vue?vue&type=template&id=4221c3ad&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/auth/Login.vue?vue&type=template&id=4221c3ad&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true&":
+/*!*********************************************************************************************************************!*\
+  !*** ./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true& ***!
+  \*********************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CustomerDashboard_vue_vue_type_template_id_f4c66ed6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CustomerDashboard_vue_vue_type_template_id_f4c66ed6_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CustomerDashboard_vue_vue_type_template_id_f4c66ed6_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true&");
 
 
 /***/ }),
@@ -66970,6 +67162,115 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card-header py-2 text-center" }, [
       _c("h3", [_vm._v("User Login")]),
+    ])
+  },
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/customer/dashboard/CustomerDashboard.vue?vue&type=template&id=f4c66ed6&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function () {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container mt-5" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-12" }, [
+        _c("div", { staticClass: "card mt-3" }, [
+          _vm._m(0),
+          _vm._v(" "),
+          _vm.bills.length
+            ? _c("div", { staticClass: "card-body" }, [
+                _c(
+                  "table",
+                  {
+                    staticClass: "table table-bordered",
+                    attrs: { id: "myTable" },
+                  },
+                  [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      _vm._l(_vm.bills, function (bill) {
+                        return _c("tr", { key: bill.id }, [
+                          _c("td", [_vm._v(_vm._s(bill.id))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v(_vm._s(bill.date))]),
+                          _vm._v(" "),
+                          _c("td", [_vm._v("Tk " + _vm._s(bill.amount))]),
+                          _vm._v(" "),
+                          _c("td", [
+                            bill.status == 1
+                              ? _c(
+                                  "button",
+                                  { staticClass: "btn btn-xs btn-primary" },
+                                  [_vm._v("Paid")]
+                                )
+                              : _c(
+                                  "button",
+                                  { staticClass: "btn btn-xs btn-secondary" },
+                                  [_vm._v("Due")]
+                                ),
+                          ]),
+                        ])
+                      }),
+                      0
+                    ),
+                  ]
+                ),
+              ])
+            : _c("div", { staticClass: "row text-center my-5" }, [_vm._m(2)]),
+        ]),
+      ]),
+    ]),
+  ])
+}
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header clearfix" }, [
+      _c("h3", { staticClass: "float-start" }, [_vm._v("All Bills")]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Billing Date")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Amount(Tk)")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Payment Status")]),
+      ]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c("h5", [_vm._v("No Bill Found")]),
     ])
   },
 ]

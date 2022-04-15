@@ -8,6 +8,7 @@ use App\Http\Controllers\BillController;
 
 
 
+
 Route::post('/admin/login',[AuthController::class, 'adminLogin'])->name('adminLogin');
 
 Route::group( ['prefix' => 'admin','middleware' => ['auth:admin-api'] ],function(){

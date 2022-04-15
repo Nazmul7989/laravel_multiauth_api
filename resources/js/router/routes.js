@@ -4,6 +4,8 @@ import AdminLogin from "../components/auth/AdminLogin";
 import AdminDashboard from "../components/admin/AdminDashboard";
 import CustomerIndex from "../components/admin/customer/CustomerIndex";
 import BillIndex from "../components/admin/bill/BillIndex";
+import CustomerDashboard
+    from "../components/customer/dashboard/CustomerDashboard";
 
 export const routes = [
     {
@@ -25,6 +27,11 @@ export const routes = [
         path: '/admin/dashboard',
         component: AdminDashboard,
         name: 'adminDashboard'
+    },
+    {
+        path: '/customer/dashboard',
+        component: CustomerDashboard,
+        name: 'customerDashboard'
     },
     {
         path: '/customer/index',
