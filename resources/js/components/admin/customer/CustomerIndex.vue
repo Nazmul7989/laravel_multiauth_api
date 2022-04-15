@@ -42,8 +42,8 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button @click="formResetByCloseBtnFooter" type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                                <button v-if="modalShow" type="button" @click.prevent="createPost" class="btn btn-success">Create</button>
-                                                <button v-if="!modalShow"  type="button" @click.prevent="updatePost" class="btn btn-success">Update</button>
+                                                <button v-if="modalShow" type="button" @click.prevent="createCustomer" class="btn btn-success">Create</button>
+                                                <button v-if="!modalShow"  type="button" @click.prevent="updateCustomer" class="btn btn-success">Update</button>
                                             </div>
                                         </form>
                                     </div>
@@ -72,7 +72,7 @@
                                 <td>{{ customer.address }}</td>
                                 <td style="width: 150px">
                                     <button @click.prevent="editModal(customer)"  class="btn btn-success">Edit</button>
-                                    <button @click.prevent="deletePost(customer.id)" class="btn btn-danger">Delete</button>
+                                    <button @click.prevent="deleteCustomer(customer.id)" class="btn btn-danger">Delete</button>
                                 </td>
                             </tr>
                             </tbody>
@@ -103,7 +103,6 @@ export default {
                 password: '',
                 address: ''
             }),
-            users: [],
             modalShow: true,
         }
     },
@@ -113,7 +112,7 @@ export default {
             this.modalShow = true;
             $('.modal').modal('show')
         },
-        createPost(){
+        createCustomer(){
             let token = localStorage.getItem('admin_access_token');
             let config = {
                 headers: {
@@ -149,7 +148,7 @@ export default {
             this.form.password = customer.password
             this.form.address = customer.address
         },
-        updatePost(){
+        updateCustomer(){
             let token = localStorage.getItem('admin_access_token');
             let config = {
                 headers: {
@@ -174,7 +173,7 @@ export default {
                 console.log(error)
             })
         },
-        deletePost(id){
+        deleteCustomer(id){
 
             Swal.fire({
                 title: 'Are you sure?',

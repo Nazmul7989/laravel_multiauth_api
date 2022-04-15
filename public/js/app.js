@@ -7968,27 +7968,251 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var vform__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vform */ "./node_modules/vform/dist/vform.es.js");
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_1__);
 //
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "BillIndex",
   data: function data() {
     return {
-      name: ''
+      form: new vform__WEBPACK_IMPORTED_MODULE_0__["default"]({
+        id: '',
+        user_id: '',
+        date: '',
+        amount: ''
+      }),
+      modalShow: true
     };
   },
   methods: {
-    test: function test() {}
-  },
-  components: {},
-  watch: {
-    route: function route(to, from) {//add $ sign before route
+    createModal: function createModal() {
+      this.modalShow = true;
+      $('.modal').modal('show');
+    },
+    createBill: function createBill() {
+      var _this = this;
+
+      var token = localStorage.getItem('admin_access_token');
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer ".concat(token)
+        }
+      };
+      this.form.post('/api/admin/bill/store', config).then(function (response) {
+        //Load post again after creating new post
+        _this.$store.dispatch('loadBills');
+
+        _this.modalShow = true; //close the modal after submittng the form
+
+        $('.modal').modal('hide'); //Show success notification
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Bill created successfully'
+        }); //Clear form after submitting
+
+        _this.resetForm();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    editModal: function editModal(bill) {
+      this.modalShow = false; //show the edit modal
+
+      $('.modal').modal('show'); //show post in modal
+
+      this.form.id = bill.id;
+      this.form.name = bill.name;
+      this.form.email = bill.email;
+      this.form.password = bill.password;
+    },
+    updateBill: function updateBill() {
+      var _this2 = this;
+
+      var token = localStorage.getItem('admin_access_token');
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer ".concat(token)
+        }
+      };
+      this.form.post('/api/admin/bill/update/' + this.form.id, config).then(function (response) {
+        //Load post again after creating new post
+        _this2.$store.dispatch('loadBills');
+
+        _this2.modalShow = true; //close the modal after submittng the form
+
+        $('.modal').modal('hide'); //Show success notification
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Bill updated successfully'
+        }); //Clear form after submitting
+
+        _this2.resetForm();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    deleteBill: function deleteBill(id) {
+      var _this3 = this;
+
+      sweetalert2__WEBPACK_IMPORTED_MODULE_1___default().fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        width: 400,
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          var token = localStorage.getItem('admin_access_token');
+          var config = {
+            headers: {
+              'Accept': 'application/json',
+              "Authorization": "Bearer ".concat(token)
+            }
+          };
+          axios["delete"]('/api/admin/bill/delete/' + id, config).then(function (response) {
+            //Reloading the posts after deleting the post
+            _this3.$store.dispatch('loadBills');
+          })["catch"](function (error) {
+            console.log(error);
+          });
+          sweetalert2__WEBPACK_IMPORTED_MODULE_1___default().fire('Deleted!', 'Bill deleted successfully.', 'success');
+        }
+      });
+    },
+    formResetByCloseBtnHeader: function formResetByCloseBtnHeader() {
+      this.resetForm();
+    },
+    formResetByCloseBtnFooter: function formResetByCloseBtnFooter() {
+      this.resetForm();
+    },
+    resetForm: function resetForm() {
+      this.form.id = '';
+      this.form.user_id = '';
+      this.form.date = '';
+      this.form.amount = '';
     }
   },
-  mounted: function mounted() {},
-  created: function created() {}
+  computed: {
+    bills: function bills() {
+      return this.$store.getters.getBills;
+    },
+    customers: function customers() {
+      return this.$store.getters.getCustomers;
+    }
+  },
+  mounted: function mounted() {
+    this.$store.dispatch('loadBills');
+    this.$store.dispatch('loadCustomers');
+    this.resetForm();
+  }
 });
 
 /***/ }),
@@ -8111,7 +8335,6 @@ __webpack_require__.r(__webpack_exports__);
         password: '',
         address: ''
       }),
-      users: [],
       modalShow: true
     };
   },
@@ -8120,7 +8343,7 @@ __webpack_require__.r(__webpack_exports__);
       this.modalShow = true;
       $('.modal').modal('show');
     },
-    createPost: function createPost() {
+    createCustomer: function createCustomer() {
       var _this = this;
 
       var token = localStorage.getItem('admin_access_token');
@@ -8159,7 +8382,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.password = customer.password;
       this.form.address = customer.address;
     },
-    updatePost: function updatePost() {
+    updateCustomer: function updateCustomer() {
       var _this2 = this;
 
       var token = localStorage.getItem('admin_access_token');
@@ -8187,7 +8410,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    deletePost: function deletePost(id) {
+    deleteCustomer: function deleteCustomer(id) {
       var _this3 = this;
 
       sweetalert2__WEBPACK_IMPORTED_MODULE_1___default().fire({
@@ -8694,19 +8917,27 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
-    customers: {}
+    customers: {},
+    bills: {}
   },
   getters: {
     getCustomers: function getCustomers(state) {
       return state.customers;
+    },
+    getBills: function getBills(state) {
+      return state.bills;
     }
   },
   mutations: {
     SET_CUSTOMERS: function SET_CUSTOMERS(state, data) {
       state.customers = data;
+    },
+    SET_BILLS: function SET_BILLS(state, data) {
+      state.bills = data;
     }
   },
   actions: {
+    //get customer data
     loadCustomers: function loadCustomers(context) {
       var token = localStorage.getItem('admin_access_token');
       var config = {
@@ -8717,6 +8948,21 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       };
       axios.get('/api/admin/customer', config).then(function (response) {
         context.commit('SET_CUSTOMERS', response.data.customers);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    //get billing data
+    loadBills: function loadBills(context) {
+      var token = localStorage.getItem('admin_access_token');
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer ".concat(token)
+        }
+      };
+      axios.get('/api/admin/bill', config).then(function (response) {
+        context.commit('SET_BILLS', response.data.bills);
       })["catch"](function (error) {
         console.log(error);
       });
@@ -49907,9 +50153,426 @@ var render = function () {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", { staticClass: "container mt-5" }, [
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-12" }, [
+        _c("div", { staticClass: "card mt-3" }, [
+          _c("div", { staticClass: "card-header clearfix" }, [
+            _c("h3", { staticClass: "float-start" }, [_vm._v("All Bills")]),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success btn-sm float-end",
+                on: {
+                  click: function ($event) {
+                    $event.preventDefault()
+                    return _vm.createModal.apply(null, arguments)
+                  },
+                },
+              },
+              [_vm._v("Create Bill")]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass: "modal fade",
+                attrs: { tabindex: "-1", "aria-hidden": "true" },
+              },
+              [
+                _c("div", { staticClass: "modal-dialog" }, [
+                  _c("div", { staticClass: "modal-content" }, [
+                    _c("div", { staticClass: "modal-header" }, [
+                      _vm.modalShow
+                        ? _c(
+                            "h3",
+                            { staticClass: "modal-title text-success" },
+                            [_vm._v(" Create New Bill ")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.modalShow
+                        ? _c(
+                            "h3",
+                            { staticClass: "modal-title text-success" },
+                            [_vm._v(" Edit Bill")]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "close",
+                          attrs: {
+                            type: "button",
+                            "data-bs-dismiss": "modal",
+                            "aria-label": "Close",
+                          },
+                          on: { click: _vm.formResetByCloseBtnHeader },
+                        },
+                        [
+                          _c("span", { attrs: { "aria-hidden": "true" } }, [
+                            _vm._v("×"),
+                          ]),
+                        ]
+                      ),
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("form", [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c(
+                            "label",
+                            {
+                              staticClass: "col-form-label",
+                              attrs: { for: "user_id" },
+                            },
+                            [_vm._v("Bill for Customer")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "select",
+                            {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.form.user_id,
+                                  expression: "form.user_id",
+                                },
+                              ],
+                              staticClass: "form-control",
+                              attrs: { name: "user_id", id: "user_id" },
+                              on: {
+                                change: function ($event) {
+                                  var $$selectedVal = Array.prototype.filter
+                                    .call($event.target.options, function (o) {
+                                      return o.selected
+                                    })
+                                    .map(function (o) {
+                                      var val =
+                                        "_value" in o ? o._value : o.value
+                                      return val
+                                    })
+                                  _vm.$set(
+                                    _vm.form,
+                                    "user_id",
+                                    $event.target.multiple
+                                      ? $$selectedVal
+                                      : $$selectedVal[0]
+                                  )
+                                },
+                              },
+                            },
+                            [
+                              _c(
+                                "option",
+                                { attrs: { value: "", selected: "" } },
+                                [_vm._v("Select Customer")]
+                              ),
+                              _vm._v(" "),
+                              _vm._l(_vm.customers, function (customer) {
+                                return _c(
+                                  "option",
+                                  {
+                                    key: customer.id,
+                                    domProps: { value: customer.id },
+                                  },
+                                  [_vm._v(_vm._s(customer.name))]
+                                )
+                              }),
+                            ],
+                            2
+                          ),
+                          _vm._v(" "),
+                          _vm.form.errors.has("user_id")
+                            ? _c("div", {
+                                staticClass: "text-danger",
+                                domProps: {
+                                  innerHTML: _vm._s(
+                                    _vm.form.errors.get("user_id")
+                                  ),
+                                },
+                              })
+                            : _vm._e(),
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group py-3" }, [
+                          _c("label", { attrs: { for: "date" } }, [
+                            _vm._v("Billing Date"),
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.date,
+                                expression: "form.date",
+                              },
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              id: "date",
+                              type: "date",
+                              name: "date",
+                              required: "",
+                            },
+                            domProps: { value: _vm.form.date },
+                            on: {
+                              input: function ($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(_vm.form, "date", $event.target.value)
+                              },
+                            },
+                          }),
+                          _vm._v(" "),
+                          _vm.form.errors.has("date")
+                            ? _c("div", {
+                                domProps: {
+                                  innerHTML: _vm._s(
+                                    _vm.form.errors.get("date")
+                                  ),
+                                },
+                              })
+                            : _vm._e(),
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", { attrs: { for: "amount" } }, [
+                            _vm._v("Bill Amount"),
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.form.amount,
+                                expression: "form.amount",
+                              },
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              id: "amount",
+                              type: "text",
+                              name: "amount",
+                              required: "",
+                            },
+                            domProps: { value: _vm.form.amount },
+                            on: {
+                              input: function ($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.$set(
+                                  _vm.form,
+                                  "amount",
+                                  $event.target.value
+                                )
+                              },
+                            },
+                          }),
+                          _vm._v(" "),
+                          _vm.form.errors.has("amount")
+                            ? _c("div", {
+                                domProps: {
+                                  innerHTML: _vm._s(
+                                    _vm.form.errors.get("amount")
+                                  ),
+                                },
+                              })
+                            : _vm._e(),
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-footer" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: {
+                                type: "button",
+                                "data-bs-dismiss": "modal",
+                              },
+                              on: { click: _vm.formResetByCloseBtnFooter },
+                            },
+                            [_vm._v("Close")]
+                          ),
+                          _vm._v(" "),
+                          _vm.modalShow
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function ($event) {
+                                      $event.preventDefault()
+                                      return _vm.createBill.apply(
+                                        null,
+                                        arguments
+                                      )
+                                    },
+                                  },
+                                },
+                                [_vm._v("Create")]
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
+                          !_vm.modalShow
+                            ? _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function ($event) {
+                                      $event.preventDefault()
+                                      return _vm.updateBill.apply(
+                                        null,
+                                        arguments
+                                      )
+                                    },
+                                  },
+                                },
+                                [_vm._v("Update")]
+                              )
+                            : _vm._e(),
+                        ]),
+                      ]),
+                    ]),
+                  ]),
+                ]),
+              ]
+            ),
+          ]),
+          _vm._v(" "),
+          _vm.bills.length
+            ? _c("div", { staticClass: "card-body" }, [
+                _c("table", { staticClass: "table table-bordered" }, [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    _vm._l(_vm.bills, function (bill) {
+                      return _c("tr", { key: bill.id }, [
+                        _c("td", [_vm._v(_vm._s(bill.id))]),
+                        _vm._v(" "),
+                        _c("td", [
+                          bill.user
+                            ? _c("span", [_vm._v(_vm._s(bill.user.name))])
+                            : _c("span", [_vm._v(_vm._s(bill.user_id))]),
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(bill.date))]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v("Tk " + _vm._s(bill.amount))]),
+                        _vm._v(" "),
+                        _c("td", [
+                          bill.status == 1
+                            ? _c(
+                                "button",
+                                { staticClass: "btn btn-xs btn-primary" },
+                                [_vm._v("Paid")]
+                              )
+                            : _c(
+                                "button",
+                                { staticClass: "btn btn-xs btn-secondary" },
+                                [_vm._v("Due")]
+                              ),
+                        ]),
+                        _vm._v(" "),
+                        _c("td", { staticStyle: { width: "150px" } }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-info btn-xs",
+                              attrs: { title: "Change Bill Status" },
+                              on: {
+                                click: function ($event) {
+                                  $event.preventDefault()
+                                  return _vm.updateBillStatus(bill.id)
+                                },
+                              },
+                            },
+                            [_vm._v("Change Status")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success btn-xs",
+                              attrs: { title: "Edit" },
+                              on: {
+                                click: function ($event) {
+                                  $event.preventDefault()
+                                  return _vm.editModal(bill)
+                                },
+                              },
+                            },
+                            [_vm._v("Edit")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger btn-xs",
+                              attrs: { title: "Delete" },
+                              on: {
+                                click: function ($event) {
+                                  $event.preventDefault()
+                                  return _vm.deleteBill(bill.id)
+                                },
+                              },
+                            },
+                            [_vm._v("Delete")]
+                          ),
+                        ]),
+                      ])
+                    }),
+                    0
+                  ),
+                ]),
+              ])
+            : _c("div", { staticClass: "row text-center my-5" }, [_vm._m(1)]),
+        ]),
+      ]),
+    ]),
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Id")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Customer")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Billing Date")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Amount(Tk)")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Payment Status")]),
+        _vm._v(" "),
+        _c("th", { staticStyle: { width: "300px" } }, [_vm._v("Action")]),
+      ]),
+    ])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c("h5", [_vm._v("No Bill Found")]),
+    ])
+  },
+]
 render._withStripped = true
 
 
@@ -50208,7 +50871,7 @@ var render = function () {
                                   on: {
                                     click: function ($event) {
                                       $event.preventDefault()
-                                      return _vm.createPost.apply(
+                                      return _vm.createCustomer.apply(
                                         null,
                                         arguments
                                       )
@@ -50228,7 +50891,7 @@ var render = function () {
                                   on: {
                                     click: function ($event) {
                                       $event.preventDefault()
-                                      return _vm.updatePost.apply(
+                                      return _vm.updateCustomer.apply(
                                         null,
                                         arguments
                                       )
@@ -50286,7 +50949,7 @@ var render = function () {
                               on: {
                                 click: function ($event) {
                                   $event.preventDefault()
-                                  return _vm.deletePost(customer.id)
+                                  return _vm.deleteCustomer(customer.id)
                                 },
                               },
                             },
