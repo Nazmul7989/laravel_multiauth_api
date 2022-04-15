@@ -63,6 +63,17 @@ export const store = new Vuex.Store({
 
             axios.get('/api/admin/bill',config).then((response) => {
                 context.commit('SET_BILLS', response.data.bills)
+
+                setTimeout(() => {
+                    $("#myTable").DataTable({
+                        lengthMenu: [
+                            [5, 10, 25, 50, -1],
+                            [5, 10, 25, 50, "All"],
+                        ],
+                        pageLength: 5,
+                    });
+                });
+
             }).catch((error) => {
                 console.log(error)
             })
