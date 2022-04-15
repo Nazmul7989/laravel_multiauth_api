@@ -4,6 +4,7 @@ require('./bootstrap');
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import {routes} from "./router/routes";
+import {store} from "./store/store";
 
 
 Vue.use(VueRouter)
@@ -18,5 +19,6 @@ Vue.component('app-header', require('./components/partials/Header.vue').default)
 
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    store
 });
