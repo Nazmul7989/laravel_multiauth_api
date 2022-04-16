@@ -8078,6 +8078,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
  //Bootstrap and jQuery libraries
 
@@ -8085,6 +8095,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+ //import lodash
+// import _ from 'lodash'
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "BillIndex",
@@ -8096,6 +8108,7 @@ __webpack_require__.r(__webpack_exports__);
         date: '',
         amount: ''
       }),
+      searchTxt: '',
       modalShow: true
     };
   },
@@ -8223,6 +8236,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    // searchBill:_.debounce(function (){
+    //     this.$store.dispatch('loadSearchBills', this.searchTxt)
+    // },1000),
     formResetByCloseBtnHeader: function formResetByCloseBtnHeader() {
       this.resetForm();
     },
@@ -9103,7 +9119,7 @@ var routes = [{
   component: _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__["default"],
   name: 'customerDashboard',
   beforeEnter: function beforeEnter(to, from, next) {
-    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.customerAuthentication === false) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.customerAuthentication === false || _store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.customerAuthentication == null) {
       return next({
         name: 'login'
       });
@@ -9129,7 +9145,7 @@ var routes = [{
   component: _components_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_3__["default"],
   name: 'adminDashboard',
   beforeEnter: function beforeEnter(to, from, next) {
-    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false || _store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication == null) {
       return next({
         name: 'adminLogin'
       });
@@ -9142,7 +9158,7 @@ var routes = [{
   component: _components_admin_customer_CustomerIndex__WEBPACK_IMPORTED_MODULE_4__["default"],
   name: 'customer',
   beforeEnter: function beforeEnter(to, from, next) {
-    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false || _store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication == null) {
       return next({
         name: 'adminLogin'
       });
@@ -9155,7 +9171,7 @@ var routes = [{
   component: _components_admin_bill_BillIndex__WEBPACK_IMPORTED_MODULE_5__["default"],
   name: 'bill',
   beforeEnter: function beforeEnter(to, from, next) {
-    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false || _store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication == null) {
       return next({
         name: 'adminLogin'
       });
@@ -9239,7 +9255,10 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     SET_AUTH_ADMIN: function SET_AUTH_ADMIN(state, data) {
       state.authAdmin = data;
-    }
+    } // SET_SEARCH_BILLS(state, data) {
+    //     state.bills = data;
+    // },
+
   },
   actions: {
     //get customer data
@@ -9342,7 +9361,24 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         localStorage.setItem('adminAuth', false);
         context.commit('SET_ADMIN_AUTHENTICATION', false);
       });
-    }
+    } //search bill
+    // loadSearchBills(context,payload){
+    //
+    //     let token = localStorage.getItem('admin_access_token');
+    //
+    //     let config = {
+    //         headers: {
+    //             'Accept' : 'application/json',
+    //             "Authorization" : `Bearer ${token}`,
+    //         }
+    //     }
+    //     axios.get('/api/admin/search?s=' + payload,config).then((response)=>{
+    //         context.commit('SET_SEARCH_BILLS', response.data.bills)
+    //     }).catch((error)=>{
+    //         console.log(error)
+    //     })
+    // },
+
   }
 });
 
@@ -66223,7 +66259,7 @@ var render = function () {
             _c(
               "button",
               {
-                staticClass: "btn btn-success btn-sm float-end",
+                staticClass: "btn btn-success btn-sm float-end ",
                 on: {
                   click: function ($event) {
                     $event.preventDefault()

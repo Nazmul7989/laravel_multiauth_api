@@ -66,6 +66,9 @@ export const store = new Vuex.Store({
         SET_AUTH_ADMIN(state, data) {
             state.authAdmin = data;
         },
+        // SET_SEARCH_BILLS(state, data) {
+        //     state.bills = data;
+        // },
 
     },
     actions: {
@@ -202,6 +205,24 @@ export const store = new Vuex.Store({
                 context.commit('SET_ADMIN_AUTHENTICATION',false)
             })
         },
+
+        //search bill
+        // loadSearchBills(context,payload){
+        //
+        //     let token = localStorage.getItem('admin_access_token');
+        //
+        //     let config = {
+        //         headers: {
+        //             'Accept' : 'application/json',
+        //             "Authorization" : `Bearer ${token}`,
+        //         }
+        //     }
+        //     axios.get('/api/admin/search?s=' + payload,config).then((response)=>{
+        //         context.commit('SET_SEARCH_BILLS', response.data.bills)
+        //     }).catch((error)=>{
+        //         console.log(error)
+        //     })
+        // },
 
     }
 });

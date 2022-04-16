@@ -6,7 +6,8 @@
                 <div class="card mt-3">
                     <div class="card-header clearfix">
                         <h3 class="float-start">All Bills</h3>
-                        <button  @click.prevent="createModal" class="btn btn-success btn-sm float-end">Create Bill</button>
+
+                        <button  @click.prevent="createModal" class="btn btn-success btn-sm float-end ">Create Bill</button>
 
                         <div class="modal fade"  tabindex="-1"  aria-hidden="true">
                             <div class="modal-dialog">
@@ -52,8 +53,17 @@
                         </div>
                     </div>
 
+<!--                    <div class="text-end row d-flex justify-content-end mt-3">-->
+<!--                        <div class="col-4">-->
+<!--                            <form>-->
+<!--                                <input type="text" @keyup="searchBill" v-model="searchTxt" placeholder="Search Bill..."  class="form-control">-->
+<!--                            </form>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <br>-->
+
                     <div class="card-body" v-if="bills.length">
-                        <table id="myTable" class="table table-bordered">
+                        <table id="myTable"  class="table table-bordered">
                             <thead>
                             <tr>
                                 <th>Id</th>
@@ -108,6 +118,9 @@ import "datatables.net-dt/js/dataTables.dataTables";
 import "datatables.net-dt/css/jquery.dataTables.min.css";
 import $ from "jquery";
 
+//import lodash
+// import _ from 'lodash'
+
 export default {
     name: "BillIndex",
     data(){
@@ -119,6 +132,7 @@ export default {
                 amount: '',
 
             }),
+            searchTxt: '',
             modalShow: true,
         }
     },
@@ -247,6 +261,11 @@ export default {
                 }
             })
         },
+
+        // searchBill:_.debounce(function (){
+        //     this.$store.dispatch('loadSearchBills', this.searchTxt)
+        // },1000),
+
         formResetByCloseBtnHeader(){
             this.resetForm()
         },

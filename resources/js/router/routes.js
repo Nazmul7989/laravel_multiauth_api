@@ -33,7 +33,7 @@ export const routes = [
         component: CustomerDashboard,
         name: 'customerDashboard',
         beforeEnter: (to,from,next) => {
-            if(store.state.customerAuthentication === false){
+            if(store.state.customerAuthentication === false || store.state.customerAuthentication == null){
                 return next({
                     name: 'login'
                 })
@@ -61,7 +61,7 @@ export const routes = [
         component: AdminDashboard,
         name: 'adminDashboard',
         beforeEnter: (to,from,next) => {
-            if(store.state.adminAuthentication === false){
+            if(store.state.adminAuthentication === false || store.state.adminAuthentication == null){
                 return next({
                     name: 'adminLogin'
                 })
@@ -75,7 +75,7 @@ export const routes = [
         component: CustomerIndex,
         name: 'customer',
         beforeEnter: (to,from,next) => {
-            if(store.state.adminAuthentication === false){
+            if(store.state.adminAuthentication === false || store.state.adminAuthentication == null){
                 return next({
                     name: 'adminLogin'
                 })
@@ -89,7 +89,7 @@ export const routes = [
         component: BillIndex,
         name: 'bill',
         beforeEnter: (to,from,next) => {
-            if(store.state.adminAuthentication === false){
+            if(store.state.adminAuthentication === false || store.state.adminAuthentication == null){
                 return next({
                     name: 'adminLogin'
                 })

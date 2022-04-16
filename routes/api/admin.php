@@ -28,6 +28,7 @@ Route::group( ['prefix' => 'admin','middleware' => ['auth:admin-api'] ],function
     Route::delete('/bill/delete/{id}',[BillController::class,'destroy'])->name('bill.delete');
     Route::get('/bill//update/status/{id}',[BillController::class,'updateStatus'])->name('bill.updateStatus');
 
-
+    //search bill
+    Route::get('/search',[BillController::class,'search'])->name('search.bill');
 
 });

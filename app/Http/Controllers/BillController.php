@@ -100,5 +100,23 @@ class BillController extends Controller
 
     }
 
+    //search bill
+    public function search(Request $request)
+    {
+        $searchTxt = \Request::get('s');
+
+        $bills = Bill::with('user:id,name')
+            ->where('amount','like', '%'.$searchTxt.'%')
+            ->orWhere('status','like', '%'.$searchTxt.'%')
+            ->orWhere('date','like', '%'.$searchTxt.'%')
+            ->where('status',1)
+            ->get();
+
+        return response()->json([
+            'status' => true,
+            'bills'  => $bills,
+        ],200);
+    }
+
 
 }
