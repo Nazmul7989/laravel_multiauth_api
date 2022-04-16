@@ -7,7 +7,9 @@ export const store = new Vuex.Store({
     state: {
         customers: {},
         bills: {},
-        myBills:{}
+        myBills:{},
+        customerAuthentication: false,
+        adminAuthentication: false,
     },
     getters: {
 
@@ -19,6 +21,13 @@ export const store = new Vuex.Store({
         },
         getMyBills(state) {
             return state.myBills;
+        },
+        getCustomerAuthentication(state) {
+            return state.customerAuthentication;
+        },
+
+        getAdminAuthentication(state) {
+            return state.adminAuthentication;
         },
 
     },
@@ -32,6 +41,12 @@ export const store = new Vuex.Store({
         },
         SET_MY_BILLS(state, data) {
             state.myBills = data;
+        },
+        SET_CUSTOMER_AUTHENTICATION(state, data) {
+            state.customerAuthentication = data;
+        },
+        SET_ADMIN_AUTHENTICATION(state, data) {
+            state.adminAuthentication = data;
         },
 
     },

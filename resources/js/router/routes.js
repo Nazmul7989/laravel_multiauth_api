@@ -6,6 +6,7 @@ import CustomerIndex from "../components/admin/customer/CustomerIndex";
 import BillIndex from "../components/admin/bill/BillIndex";
 import CustomerDashboard
     from "../components/customer/dashboard/CustomerDashboard";
+import {store} from "../store/store";
 
 export const routes = [
     {
@@ -26,21 +27,57 @@ export const routes = [
     {
         path: '/admin/dashboard',
         component: AdminDashboard,
-        name: 'adminDashboard'
-    },
-    {
-        path: '/customer/dashboard',
-        component: CustomerDashboard,
-        name: 'customerDashboard'
+        name: 'adminDashboard',
+        beforeEnter: (to,from,next) => {
+            if(store.state.adminAuthentication === false){
+                return next({
+                    name: 'adminLogin'
+                })
+            }else {
+                next()
+            }
+        }
     },
     {
         path: '/customer/index',
         component: CustomerIndex,
-        name: 'customer'
+        name: 'customer',
+        beforeEnter: (to,from,next) => {
+            if(store.state.adminAuthentication === false){
+                return next({
+                    name: 'adminLogin'
+                })
+            }else {
+                next()
+            }
+        }
     },
     {
         path: '/bill/index',
         component: BillIndex,
-        name: 'bill'
-    }
+        name: 'bill',
+        beforeEnter: (to,from,next) => {
+            if(store.state.adminAuthentication === false){
+                return next({
+                    name: 'adminLogin'
+                })
+            }else {
+                next()
+            }
+        }
+    },
+    {
+        path: '/customer/dashboard',
+        component: CustomerDashboard,
+        name: 'customerDashboard',
+        beforeEnter: (to,from,next) => {
+            if(store.state.customerAuthentication === false){
+                return next({
+                    name: 'login'
+                })
+            }else {
+                next()
+            }
+        }
+    },
 ]

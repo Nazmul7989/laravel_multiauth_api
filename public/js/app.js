@@ -8986,6 +8986,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_admin_customer_CustomerIndex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/admin/customer/CustomerIndex */ "./resources/js/components/admin/customer/CustomerIndex.vue");
 /* harmony import */ var _components_admin_bill_BillIndex__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/admin/bill/BillIndex */ "./resources/js/components/admin/bill/BillIndex.vue");
 /* harmony import */ var _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/customer/dashboard/CustomerDashboard */ "./resources/js/components/customer/dashboard/CustomerDashboard.vue");
+/* harmony import */ var _store_store__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../store/store */ "./resources/js/store/store.js");
+
 
 
 
@@ -9008,19 +9010,55 @@ var routes = [{
 }, {
   path: '/admin/dashboard',
   component: _components_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_3__["default"],
-  name: 'adminDashboard'
-}, {
-  path: '/customer/dashboard',
-  component: _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__["default"],
-  name: 'customerDashboard'
+  name: 'adminDashboard',
+  beforeEnter: function beforeEnter(to, from, next) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false) {
+      return next({
+        name: 'adminLogin'
+      });
+    } else {
+      next();
+    }
+  }
 }, {
   path: '/customer/index',
   component: _components_admin_customer_CustomerIndex__WEBPACK_IMPORTED_MODULE_4__["default"],
-  name: 'customer'
+  name: 'customer',
+  beforeEnter: function beforeEnter(to, from, next) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false) {
+      return next({
+        name: 'adminLogin'
+      });
+    } else {
+      next();
+    }
+  }
 }, {
   path: '/bill/index',
   component: _components_admin_bill_BillIndex__WEBPACK_IMPORTED_MODULE_5__["default"],
-  name: 'bill'
+  name: 'bill',
+  beforeEnter: function beforeEnter(to, from, next) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === false) {
+      return next({
+        name: 'adminLogin'
+      });
+    } else {
+      next();
+    }
+  }
+}, {
+  path: '/customer/dashboard',
+  component: _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__["default"],
+  name: 'customerDashboard',
+  beforeEnter: function beforeEnter(to, from, next) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.customerAuthentication === false) {
+      return next({
+        name: 'login'
+      });
+    } else {
+      next();
+    }
+  }
 }];
 
 /***/ }),
@@ -9045,7 +9083,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     customers: {},
     bills: {},
-    myBills: {}
+    myBills: {},
+    customerAuthentication: false,
+    adminAuthentication: false
   },
   getters: {
     getCustomers: function getCustomers(state) {
@@ -9056,6 +9096,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     getMyBills: function getMyBills(state) {
       return state.myBills;
+    },
+    getCustomerAuthentication: function getCustomerAuthentication(state) {
+      return state.customerAuthentication;
+    },
+    getAdminAuthentication: function getAdminAuthentication(state) {
+      return state.adminAuthentication;
     }
   },
   mutations: {
@@ -9067,6 +9113,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     SET_MY_BILLS: function SET_MY_BILLS(state, data) {
       state.myBills = data;
+    },
+    SET_CUSTOMER_AUTHENTICATION: function SET_CUSTOMER_AUTHENTICATION(state, data) {
+      state.customerAuthentication = data;
+    },
+    SET_ADMIN_AUTHENTICATION: function SET_ADMIN_AUTHENTICATION(state, data) {
+      state.adminAuthentication = data;
     }
   },
   actions: {
