@@ -65,3 +65,5 @@ php artisan serve
 ```
 php artisan queue:work
 ```
+
+# **You will get the sql database file in DB directory of this project**
