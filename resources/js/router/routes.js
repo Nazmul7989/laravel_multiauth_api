@@ -17,12 +17,44 @@ export const routes = [
     {
         path: '/login',
         component: Login,
-        name: 'login'
+        name: 'login',
+        beforeEnter: (to,from,next) => {
+            if(store.state.customerAuthentication === true){
+                return next({
+                    name: 'customerDashboard'
+                })
+            }else {
+                next()
+            }
+        }
+    },
+    {
+        path: '/customer/dashboard',
+        component: CustomerDashboard,
+        name: 'customerDashboard',
+        beforeEnter: (to,from,next) => {
+            if(store.state.customerAuthentication === false){
+                return next({
+                    name: 'login'
+                })
+            }else {
+                next()
+            }
+        }
     },
     {
         path: '/admin/login',
         component: AdminLogin,
-        name: 'adminLogin'
+        name: 'adminLogin',
+        beforeEnter: (to,from,next) => {
+            if(store.state.adminAuthentication === true){
+                return next({
+                    name: 'adminDashboard'
+                })
+            }else {
+                next()
+            }
+        }
     },
     {
         path: '/admin/dashboard',
@@ -66,18 +98,5 @@ export const routes = [
             }
         }
     },
-    {
-        path: '/customer/dashboard',
-        component: CustomerDashboard,
-        name: 'customerDashboard',
-        beforeEnter: (to,from,next) => {
-            if(store.state.customerAuthentication === false){
-                return next({
-                    name: 'login'
-                })
-            }else {
-                next()
-            }
-        }
-    },
+
 ]

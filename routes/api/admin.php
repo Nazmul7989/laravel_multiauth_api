@@ -13,7 +13,7 @@ Route::post('/admin/login',[AuthController::class, 'adminLogin'])->name('adminLo
 
 Route::group( ['prefix' => 'admin','middleware' => ['auth:admin-api'] ],function(){
     // authenticated staff routes here
-    Route::get('/dashboard',[AuthController::class, 'adminDashboard']);
+    Route::get('/dashboard/{id}',[AuthController::class, 'adminDashboard']);
 
     //Customer route
     Route::get('/customer',[CustomerController::class,'index'])->name('customer.index');

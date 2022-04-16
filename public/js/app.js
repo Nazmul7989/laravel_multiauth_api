@@ -8598,6 +8598,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   localStorage.setItem('admin_access_token', response.data.access_token);
                   localStorage.setItem('admin', JSON.stringify(response.data.admin));
 
+                  _this.$store.commit('SET_ADMIN_AUTHENTICATION', true);
+
+                  localStorage.setItem('adminAuth', true);
+
+                  _this.$store.dispatch('loadAuthAdmin');
+
                   _this.$router.push({
                     name: 'adminDashboard'
                   });
@@ -8711,6 +8717,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _this.form.post('/api/customer/login').then(function (response) {
                   localStorage.setItem('customer_access_token', response.data.access_token);
                   localStorage.setItem('customer', JSON.stringify(response.data.customer));
+
+                  _this.$store.commit('SET_CUSTOMER_AUTHENTICATION', true);
+
+                  localStorage.setItem('customerAuth', true);
+
+                  _this.$store.dispatch('loadAuthCustomer');
 
                   _this.$router.push({
                     name: 'customerDashboard'
@@ -8860,6 +8872,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Header",
   data: function data() {
@@ -8868,9 +8902,61 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    test: function test() {}
+    customerLogout: function customerLogout() {
+      Toast.fire({
+        icon: 'success',
+        title: 'Logout successfully'
+      });
+      this.$store.commit("SET_AUTH_CUSTOMER", null);
+      this.$store.commit("SET_CUSTOMER_AUTHENTICATION", false);
+      localStorage.removeItem('customer_access_token');
+      localStorage.removeItem('customer');
+      localStorage.removeItem('customerAuth');
+      this.$router.push({
+        name: 'home'
+      });
+    },
+    adminLogout: function adminLogout() {
+      Toast.fire({
+        icon: 'success',
+        title: 'Logout successfully'
+      });
+      this.$store.commit("SET_AUTH_ADMIN", null);
+      this.$store.commit("SET_ADMIN_AUTHENTICATION", false);
+      localStorage.removeItem('admin_access_token');
+      localStorage.removeItem('admin');
+      localStorage.removeItem('adminAuth');
+      this.$router.push({
+        name: 'home'
+      });
+    }
   },
-  components: {}
+  computed: {
+    authCustomer: function authCustomer() {
+      return this.$store.getters.getCustomerAuthentication;
+    },
+    authAdmin: function authAdmin() {
+      return this.$store.getters.getAdminAuthentication;
+    },
+    customer: function customer() {
+      return this.$store.getters.getAuthCustomer;
+    },
+    admin: function admin() {
+      return this.$store.getters.getAuthAdmin;
+    }
+  },
+  mounted: function mounted() {
+    var customer_token = localStorage.getItem('customer_access_token');
+    var admin_token = localStorage.getItem('admin_access_token');
+
+    if (customer_token) {
+      this.$store.dispatch('loadAuthCustomer');
+    }
+
+    if (admin_token) {
+      this.$store.dispatch('loadAuthAdmin');
+    }
+  }
 });
 
 /***/ }),
@@ -9002,11 +9088,42 @@ var routes = [{
 }, {
   path: '/login',
   component: _components_auth_Login__WEBPACK_IMPORTED_MODULE_1__["default"],
-  name: 'login'
+  name: 'login',
+  beforeEnter: function beforeEnter(to, from, next) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.customerAuthentication === true) {
+      return next({
+        name: 'customerDashboard'
+      });
+    } else {
+      next();
+    }
+  }
+}, {
+  path: '/customer/dashboard',
+  component: _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__["default"],
+  name: 'customerDashboard',
+  beforeEnter: function beforeEnter(to, from, next) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.customerAuthentication === false) {
+      return next({
+        name: 'login'
+      });
+    } else {
+      next();
+    }
+  }
 }, {
   path: '/admin/login',
   component: _components_auth_AdminLogin__WEBPACK_IMPORTED_MODULE_2__["default"],
-  name: 'adminLogin'
+  name: 'adminLogin',
+  beforeEnter: function beforeEnter(to, from, next) {
+    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.adminAuthentication === true) {
+      return next({
+        name: 'adminDashboard'
+      });
+    } else {
+      next();
+    }
+  }
 }, {
   path: '/admin/dashboard',
   component: _components_admin_AdminDashboard__WEBPACK_IMPORTED_MODULE_3__["default"],
@@ -9046,19 +9163,6 @@ var routes = [{
       next();
     }
   }
-}, {
-  path: '/customer/dashboard',
-  component: _components_customer_dashboard_CustomerDashboard__WEBPACK_IMPORTED_MODULE_6__["default"],
-  name: 'customerDashboard',
-  beforeEnter: function beforeEnter(to, from, next) {
-    if (_store_store__WEBPACK_IMPORTED_MODULE_7__.store.state.customerAuthentication === false) {
-      return next({
-        name: 'login'
-      });
-    } else {
-      next();
-    }
-  }
 }];
 
 /***/ }),
@@ -9079,13 +9183,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 vue__WEBPACK_IMPORTED_MODULE_0__["default"].use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+var customerAuth = localStorage.getItem('customerAuth');
+var adminAuth = localStorage.getItem('adminAuth');
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     customers: {},
     bills: {},
     myBills: {},
-    customerAuthentication: false,
-    adminAuthentication: false
+    customerAuthentication: customerAuth,
+    adminAuthentication: adminAuth,
+    authCustomer: {},
+    authAdmin: {}
   },
   getters: {
     getCustomers: function getCustomers(state) {
@@ -9102,6 +9210,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     getAdminAuthentication: function getAdminAuthentication(state) {
       return state.adminAuthentication;
+    },
+    getAuthCustomer: function getAuthCustomer(state) {
+      return state.authCustomer;
+    },
+    getAuthAdmin: function getAuthAdmin(state) {
+      return state.authAdmin;
     }
   },
   mutations: {
@@ -9119,6 +9233,12 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     },
     SET_ADMIN_AUTHENTICATION: function SET_ADMIN_AUTHENTICATION(state, data) {
       state.adminAuthentication = data;
+    },
+    SET_AUTH_CUSTOMER: function SET_AUTH_CUSTOMER(state, data) {
+      state.authCustomer = data;
+    },
+    SET_AUTH_ADMIN: function SET_AUTH_ADMIN(state, data) {
+      state.authAdmin = data;
     }
   },
   actions: {
@@ -9179,6 +9299,48 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         });
       })["catch"](function (error) {
         console.log(error);
+      });
+    },
+    //get authenticated customer data
+    loadAuthCustomer: function loadAuthCustomer(context) {
+      var token = localStorage.getItem('customer_access_token');
+      var user = localStorage.getItem('customer');
+      var userData = JSON.parse(user);
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer ".concat(token)
+        }
+      };
+      axios.get('/api/customer/dashboard/' + userData.id, config).then(function (response) {
+        context.commit('SET_AUTH_CUSTOMER', response.data.customer);
+        localStorage.setItem('customerAuth', true);
+        context.commit('SET_CUSTOMER_AUTHENTICATION', true);
+      })["catch"](function (error) {
+        context.commit('SET_AUTH_CUSTOMER', null);
+        localStorage.setItem('customerAuth', false);
+        context.commit('SET_CUSTOMER_AUTHENTICATION', false);
+      });
+    },
+    //get authenticated admin data
+    loadAuthAdmin: function loadAuthAdmin(context) {
+      var token = localStorage.getItem('admin_access_token');
+      var admin = localStorage.getItem('admin');
+      var adminData = JSON.parse(admin);
+      var config = {
+        headers: {
+          'Accept': 'application/json',
+          "Authorization": "Bearer ".concat(token)
+        }
+      };
+      axios.get('/api/admin/dashboard/' + adminData.id, config).then(function (response) {
+        context.commit('SET_AUTH_ADMIN', response.data.admin);
+        localStorage.setItem('adminAuth', true);
+        context.commit('SET_ADMIN_AUTHENTICATION', true);
+      })["catch"](function (error) {
+        context.commit('SET_AUTH_ADMIN', null);
+        localStorage.setItem('adminAuth', false);
+        context.commit('SET_ADMIN_AUTHENTICATION', false);
       });
     }
   }
@@ -66023,7 +66185,7 @@ var staticRenderFns = [
     return _c("div", { staticClass: "container" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col-12" }, [
-          _c("h3", [_vm._v("Welcome to Dashboard")]),
+          _c("h3", [_vm._v("Welcome to Admin Dashboard")]),
         ]),
       ]),
     ])
@@ -67374,89 +67536,269 @@ var render = function () {
               attrs: { id: "navbarSupportedContent" },
             },
             [
-              _c("ul", { staticClass: "navbar-nav ms-auto mb-2 mb-lg-0" }, [
-                _c(
-                  "li",
-                  { staticClass: "nav-item" },
-                  [
+              _vm.authCustomer
+                ? _c("ul", { staticClass: "navbar-nav ms-auto mb-2 mb-lg-0" }, [
                     _c(
-                      "router-link",
-                      {
-                        staticClass: "nav-link",
-                        attrs: {
-                          to: { name: "home" },
-                          "active-class": "active",
-                          exact: "",
-                        },
-                      },
-                      [_vm._v("Home")]
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: {
+                              to: { name: "home" },
+                              "active-class": "active",
+                              exact: "",
+                            },
+                          },
+                          [_vm._v("Home")]
+                        ),
+                      ],
+                      1
                     ),
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "li",
-                  { staticClass: "nav-item" },
-                  [
+                    _vm._v(" "),
+                    _c("li", { staticClass: "nav-item dropdown" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav-link dropdown-toggle",
+                          attrs: {
+                            href: "#",
+                            id: "navbarDropdown",
+                            role: "button",
+                            "data-bs-toggle": "dropdown",
+                            "aria-expanded": "false",
+                          },
+                        },
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.customer.name) +
+                              "\n                    "
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "ul",
+                        {
+                          staticClass: "dropdown-menu",
+                          attrs: { "aria-labelledby": "navbarDropdown" },
+                        },
+                        [
+                          _c(
+                            "li",
+                            [
+                              _c(
+                                "router-link",
+                                {
+                                  staticClass: "dropdown-item",
+                                  attrs: { to: { name: "customerDashboard" } },
+                                },
+                                [_vm._v("Dashboard")]
+                              ),
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _vm._m(1),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "dropdown-item",
+                                attrs: { type: "submit" },
+                                on: {
+                                  click: function ($event) {
+                                    $event.preventDefault()
+                                    return _vm.customerLogout.apply(
+                                      null,
+                                      arguments
+                                    )
+                                  },
+                                },
+                              },
+                              [_vm._v("Logout")]
+                            ),
+                          ]),
+                        ]
+                      ),
+                    ]),
+                  ])
+                : _vm.authAdmin
+                ? _c("ul", { staticClass: "navbar-nav ms-auto mb-2 mb-lg-0" }, [
                     _c(
-                      "router-link",
-                      {
-                        staticClass: "nav-link",
-                        attrs: {
-                          to: { name: "login" },
-                          "active-class": "active",
-                          exact: "",
-                        },
-                      },
-                      [_vm._v("Login")]
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: {
+                              to: { name: "home" },
+                              "active-class": "active",
+                              exact: "",
+                            },
+                          },
+                          [_vm._v("Home")]
+                        ),
+                      ],
+                      1
                     ),
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "li",
-                  { staticClass: "nav-item" },
-                  [
+                    _vm._v(" "),
                     _c(
-                      "router-link",
-                      {
-                        staticClass: "nav-link",
-                        attrs: {
-                          to: { name: "customer" },
-                          "active-class": "active",
-                          exact: "",
-                        },
-                      },
-                      [_vm._v("Customers")]
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: {
+                              to: { name: "customer" },
+                              "active-class": "active",
+                              exact: "",
+                            },
+                          },
+                          [_vm._v("Customer")]
+                        ),
+                      ],
+                      1
                     ),
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "li",
-                  { staticClass: "nav-item" },
-                  [
+                    _vm._v(" "),
                     _c(
-                      "router-link",
-                      {
-                        staticClass: "nav-link",
-                        attrs: {
-                          to: { name: "bill" },
-                          "active-class": "active",
-                          exact: "",
-                        },
-                      },
-                      [_vm._v("Bill")]
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: {
+                              to: { name: "bill" },
+                              "active-class": "active",
+                              exact: "",
+                            },
+                          },
+                          [_vm._v("Bill")]
+                        ),
+                      ],
+                      1
                     ),
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _vm._m(1),
-              ]),
+                    _vm._v(" "),
+                    _c("li", { staticClass: "nav-item dropdown" }, [
+                      _c(
+                        "a",
+                        {
+                          staticClass: "nav-link dropdown-toggle",
+                          attrs: {
+                            href: "#",
+                            id: "navbarDropdown",
+                            role: "button",
+                            "data-bs-toggle": "dropdown",
+                            "aria-expanded": "false",
+                          },
+                        },
+                        [
+                          _vm._v(
+                            "\n                        " +
+                              _vm._s(_vm.admin.name) +
+                              "\n                    "
+                          ),
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "ul",
+                        {
+                          staticClass: "dropdown-menu",
+                          attrs: { "aria-labelledby": "navbarDropdown" },
+                        },
+                        [
+                          _c(
+                            "li",
+                            [
+                              _c(
+                                "router-link",
+                                {
+                                  staticClass: "dropdown-item",
+                                  attrs: { to: { name: "adminDashboard" } },
+                                },
+                                [_vm._v("Dashboard")]
+                              ),
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _vm._m(2),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "button",
+                              {
+                                staticClass: "dropdown-item",
+                                attrs: { type: "submit" },
+                                on: {
+                                  click: function ($event) {
+                                    $event.preventDefault()
+                                    return _vm.adminLogout.apply(
+                                      null,
+                                      arguments
+                                    )
+                                  },
+                                },
+                              },
+                              [_vm._v("Logout")]
+                            ),
+                          ]),
+                        ]
+                      ),
+                    ]),
+                  ])
+                : _c("ul", { staticClass: "navbar-nav ms-auto mb-2 mb-lg-0" }, [
+                    _c(
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: {
+                              to: { name: "home" },
+                              "active-class": "active",
+                              exact: "",
+                            },
+                          },
+                          [_vm._v("Home")]
+                        ),
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "li",
+                      { staticClass: "nav-item" },
+                      [
+                        _c(
+                          "router-link",
+                          {
+                            staticClass: "nav-link",
+                            attrs: {
+                              to: { name: "login" },
+                              "active-class": "active",
+                              exact: "",
+                            },
+                          },
+                          [_vm._v("Login")]
+                        ),
+                      ],
+                      1
+                    ),
+                  ]),
             ]
           ),
         ],
@@ -67490,45 +67832,13 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("li", { staticClass: "nav-item dropdown" }, [
-      _c(
-        "a",
-        {
-          staticClass: "nav-link dropdown-toggle",
-          attrs: {
-            href: "#",
-            id: "navbarDropdown",
-            role: "button",
-            "data-bs-toggle": "dropdown",
-            "aria-expanded": "false",
-          },
-        },
-        [_vm._v("\n                        Account\n                    ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "ul",
-        {
-          staticClass: "dropdown-menu",
-          attrs: { "aria-labelledby": "navbarDropdown" },
-        },
-        [
-          _c("li", [
-            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-              _vm._v("Dashboard"),
-            ]),
-          ]),
-          _vm._v(" "),
-          _c("li", [_c("hr", { staticClass: "dropdown-divider" })]),
-          _vm._v(" "),
-          _c("li", [
-            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-              _vm._v("Logout"),
-            ]),
-          ]),
-        ]
-      ),
-    ])
+    return _c("li", [_c("hr", { staticClass: "dropdown-divider" })])
+  },
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [_c("hr", { staticClass: "dropdown-divider" })])
   },
 ]
 render._withStripped = true

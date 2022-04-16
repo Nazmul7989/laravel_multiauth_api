@@ -3,13 +3,19 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+let customerAuth = localStorage.getItem('customerAuth')
+let adminAuth = localStorage.getItem('adminAuth')
+
 export const store = new Vuex.Store({
+
     state: {
         customers: {},
         bills: {},
         myBills:{},
-        customerAuthentication: false,
-        adminAuthentication: false,
+        customerAuthentication: customerAuth,
+        adminAuthentication: adminAuth,
+        authCustomer: {},
+        authAdmin: {},
     },
     getters: {
 
@@ -29,6 +35,12 @@ export const store = new Vuex.Store({
         getAdminAuthentication(state) {
             return state.adminAuthentication;
         },
+        getAuthCustomer(state) {
+            return state.authCustomer;
+        },
+        getAuthAdmin(state) {
+            return state.authAdmin;
+        },
 
     },
     mutations: {
@@ -47,6 +59,12 @@ export const store = new Vuex.Store({
         },
         SET_ADMIN_AUTHENTICATION(state, data) {
             state.adminAuthentication = data;
+        },
+        SET_AUTH_CUSTOMER(state, data) {
+            state.authCustomer = data;
+        },
+        SET_AUTH_ADMIN(state, data) {
+            state.authAdmin = data;
         },
 
     },
@@ -130,6 +148,58 @@ export const store = new Vuex.Store({
 
             }).catch((error) => {
                 console.log(error)
+            })
+        },
+
+        //get authenticated customer data
+         loadAuthCustomer  (context) {
+
+            let token = localStorage.getItem('customer_access_token');
+            let user = localStorage.getItem('customer');
+            let userData = JSON.parse(user);
+
+            let config = {
+                headers: {
+                    'Accept' : 'application/json',
+                    "Authorization" : `Bearer ${token}`,
+                }
+            }
+
+            axios.get('/api/customer/dashboard/'+userData.id,config).then((response) => {
+                context.commit('SET_AUTH_CUSTOMER', response.data.customer)
+                localStorage.setItem('customerAuth',true);
+                context.commit('SET_CUSTOMER_AUTHENTICATION',true)
+
+            }).catch((error) => {
+                context.commit('SET_AUTH_CUSTOMER',null)
+                localStorage.setItem('customerAuth',false);
+                context.commit('SET_CUSTOMER_AUTHENTICATION',false)
+            })
+        },
+
+        //get authenticated admin data
+        loadAuthAdmin  (context) {
+
+            let token = localStorage.getItem('admin_access_token');
+            let admin = localStorage.getItem('admin');
+            let adminData = JSON.parse(admin);
+
+            let config = {
+                headers: {
+                    'Accept' : 'application/json',
+                    "Authorization" : `Bearer ${token}`,
+                }
+            }
+
+            axios.get('/api/admin/dashboard/'+adminData.id,config).then((response) => {
+                context.commit('SET_AUTH_ADMIN', response.data.admin)
+                localStorage.setItem('adminAuth',true);
+                context.commit('SET_ADMIN_AUTHENTICATION',true)
+
+            }).catch((error) => {
+                context.commit('SET_AUTH_ADMIN',null)
+                localStorage.setItem('adminAuth',false);
+                context.commit('SET_ADMIN_AUTHENTICATION',false)
             })
         },
 

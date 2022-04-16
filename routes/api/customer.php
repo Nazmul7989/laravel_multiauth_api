@@ -10,6 +10,6 @@ Route::post('/customer/login',[AuthController::class, 'userLogin'])->name('userL
 
 Route::group( ['prefix' => 'customer','middleware' => ['auth:customer-api'] ],function(){
     // authenticated staff routes here
-    Route::get('/dashboard',[AuthController::class, 'userDashboard']);
+    Route::get('/dashboard/{id}',[AuthController::class, 'userDashboard']);
     Route::get('/my-bill/{id}',[CustomerBillController::class,'index'])->name('myBill.index');
 });

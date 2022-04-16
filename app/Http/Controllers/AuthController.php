@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Validator;
 class AuthController extends Controller
 {
     //customer dashboard
-    public function userDashboard()
+    public function userDashboard($id)
     {
-        $user = User::select('users.*')->find(auth()->guard('customer')->user()->id);
+        $user = User::select('users.*')->find($id);
 
         return response()->json([
             'status' => true,
@@ -22,9 +22,9 @@ class AuthController extends Controller
     }
 
     //admin dashboard
-    public function adminDashboard()
+    public function adminDashboard($id)
     {
-        $admin = Admin::select('admins.*')->find(auth()->guard('admin')->user()->id);
+        $admin = Admin::select('admins.*')->find($id);
 
         return response()->json([
             'status' => true,

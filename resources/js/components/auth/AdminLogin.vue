@@ -65,8 +65,10 @@ export default {
 
                 localStorage.setItem('admin_access_token',response.data.access_token);
                 localStorage.setItem('admin',JSON.stringify(response.data.admin));
+                this.$store.commit('SET_ADMIN_AUTHENTICATION',true)
+                localStorage.setItem('adminAuth',true);
+                this.$store.dispatch('loadAuthAdmin')
                 this.$router.push({name:'adminDashboard'})
-
 
             }).catch((error)=>{
                 console.log(error)

@@ -61,15 +61,19 @@ export default {
         })
     }),
     methods: {
-        async login() {
-            await this.form.post('/api/customer/login').then((response)=>{
+         async login() {
+             await this.form.post('/api/customer/login').then((response)=>{
                 localStorage.setItem('customer_access_token',response.data.access_token);
                 localStorage.setItem('customer',JSON.stringify(response.data.customer));
+                this.$store.commit('SET_CUSTOMER_AUTHENTICATION',true)
+                 localStorage.setItem('customerAuth',true);
+                 this.$store.dispatch('loadAuthCustomer')
                 this.$router.push({name:'customerDashboard'})
             }).catch((error)=>{
                 console.log(error)
             })
-        }
+        },
+
     },
 
 
